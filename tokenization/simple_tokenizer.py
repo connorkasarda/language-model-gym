@@ -32,4 +32,3 @@ class SimpleTokenizer(Tokenizer):
         
         tokens = re.findall(r'[a-zA-Z]+|[,.;:\'"!?()]|--', text)
         return tokens
-    

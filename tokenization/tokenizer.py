@@ -12,6 +12,9 @@ class Tokenizer:
     """
     Base class for tokenizers.
 
+    Attributes:
+        vocab (Vocabulary): An instance of the Vocabulary class used for encoding and decoding tokens.
+
     Methods:
         tokenize(text: str) -> list[str]: Tokenizes the input text into a list of tokens.
         encode(text: str) -> list[int]: Encodes the input text into a list of token IDs.
@@ -22,6 +25,7 @@ class Tokenizer:
         """
         Initializes the Tokenizer instance.
         """
+        
         self.vocab = Vocabulary()
 
     def train(self, text: str) -> None:
