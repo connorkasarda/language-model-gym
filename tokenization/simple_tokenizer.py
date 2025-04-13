@@ -21,7 +21,7 @@ class SimpleTokenizer(Tokenizer):
 
     def tokenize(self, text: str) -> list[str]:
         """
-        Tokenizes the input text into a list of tokens using a simple regex-based approach.
+        Tokenizes the input text into a list of tokens.
 
         Args:
             text (str): The input text to tokenize.
@@ -29,7 +29,7 @@ class SimpleTokenizer(Tokenizer):
         Returns:
             list[str]: A list of tokens extracted from the input text.
         """
-        # Use regex to split the text into words and punctuation
+        
         tokens = re.findall(r'[a-zA-Z]+|[,.;:\'"!?()]|--', text)
         return tokens
     
