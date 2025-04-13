@@ -5,6 +5,7 @@ Author: Connor Kasarda
 Date: 2025-04-13
 """
 
+import string
 from tokenization.vocabulary import Vocabulary
 
 class Tokenizer:
@@ -17,7 +18,7 @@ class Tokenizer:
         decode(token_ids: list[int]) -> str: Decodes a list of token IDs back into the original text.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initializes the Tokenizer instance.
         """
@@ -72,5 +73,20 @@ class Tokenizer:
             str: The decoded text.
         """
 
-        tokens = [self.vocab.get_token(token_id) for token_id in token_ids]
-        return ' '.join(tokens)
+        tokens = []
+        for iter, token_id in enumerate(token_ids):
+            token = self.vocab.get_token(token_id)
+            if iter != 0 and token not in string.punctuation:
+                tokens.append(' ')
+            tokens.append(token)
+        return ''.join(tokens)
+    
+    def __len__(self) -> int:
+        """
+        Returns the size of the vocabulary.
+
+        Returns:
+            int: The size of the vocabulary.
+        """
+
+        return len(self.vocab)
