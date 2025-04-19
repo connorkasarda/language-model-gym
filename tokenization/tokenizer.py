@@ -38,8 +38,8 @@ class Tokenizer:
             text (str): The input text to train on.
         """
 
-        tokens = self.segment(text)
-        self.vocab.build(tokens)
+        tokenized_text = self.segment(text)
+        self.vocab.build(tokenized_text)
 
     def segment(self, text: str) -> list[str]:
         """
@@ -65,8 +65,8 @@ class Tokenizer:
             list[int]: A list of token IDs corresponding to the input text.
         """
 
-        tokens = self.segment(text)
-        return [self.vocab.get_id(token) for token in tokens]
+        tokenized_text = self.segment(text)
+        return [self.vocab.get_id(token) for token in tokenized_text]
     
     def decode(self, token_ids: list[int]) -> str:
         """
@@ -79,13 +79,13 @@ class Tokenizer:
             str: The decoded text.
         """
 
-        tokens = []
+        tokenzied_text = []
         for iter, token_id in enumerate(token_ids):
             token = self.vocab.get_token(token_id)
             if iter != 0 and token not in string.punctuation:
-                tokens.append(' ')
-            tokens.append(token)
-        return ''.join(tokens)
+                tokenzied_text.append(' ')
+            tokenzied_text.append(token)
+        return ''.join(tokenzied_text)
     
     def __len__(self) -> int:
         """
