@@ -17,8 +17,8 @@ class Tokenizer:
 
     Methods:
         __init__() -> None: Initializes the Tokenizer instance.
-        train(text: str) -> None: Trains the tokenizer on the provided text.
-        tokenize(text: str) -> list[str]: Tokenizes the input text into a list of tokens.
+        learn(text: str) -> None: Trains the tokenizer on the provided text.
+        segment(text: str) -> list[str]: Tokenizes the input text into a list of tokens.
         encode(text: str) -> list[int]: Encodes the input text into a list of token IDs.
         decode(token_ids: list[int]) -> str: Decodes a list of token IDs back into the original text.
     """

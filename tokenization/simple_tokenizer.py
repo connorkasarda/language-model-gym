@@ -14,7 +14,7 @@ class SimpleTokenizer(Tokenizer):
 
     Methods:
         __init__(): Initializes the SimpleTokenizer instance.
-        tokenize(text: str) -> list[str]: Tokenizes the input text into a list of tokens.
+        segment(text: str) -> list[str]: Tokenizes the input text into a list of tokens.
     """
 
     def __init__(self) -> None:
