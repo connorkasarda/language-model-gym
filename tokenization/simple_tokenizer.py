@@ -24,7 +24,7 @@ class SimpleTokenizer(Tokenizer):
         
         super().__init__()
 
-    def tokenize(self, text: str) -> list[str]:
+    def segment(self, text: str) -> list[str]:
         """
         Tokenizes the input text into a list of tokens.
 

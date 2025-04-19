@@ -26,7 +26,7 @@ class TestSimpleTokenizer(unittest.TestCase):
 
         self.simple_tokenizer = SimpleTokenizer()
 
-    def test_tokenize(self) -> None:
+    def test_segment(self) -> None:
         """
         Test the tokenize method.
 
@@ -35,10 +35,10 @@ class TestSimpleTokenizer(unittest.TestCase):
 
         text = "Hello, world!"
         expected_tokens = ["Hello", ",", "world", "!"]
-        tokens = self.simple_tokenizer.tokenize(text)
+        tokens = self.simple_tokenizer.segment(text)
         self.assertEqual(tokens, expected_tokens)
 
-    def test_train(self) -> None:
+    def test_learn(self) -> None:
         """
         Test the train method.
 
@@ -46,7 +46,7 @@ class TestSimpleTokenizer(unittest.TestCase):
         """
 
         text = 'It\'s a beautiful day!'
-        self.simple_tokenizer.train(text)
+        self.simple_tokenizer.learn(text)
         # Remember that we have to compensate for special tokens (normal tokens = 7, special tokens = 4)
         expected_vocab_size = 11
         self.assertEqual(len(self.simple_tokenizer), expected_vocab_size)
@@ -59,7 +59,7 @@ class TestSimpleTokenizer(unittest.TestCase):
         """
 
         text = 'In the beginning, God created the heavens and the earth.'
-        self.simple_tokenizer.train(text)
+        self.simple_tokenizer.learn(text)
         actual_token_ids = self.simple_tokenizer.encode(text)
         expected_token_ids = [
             self.simple_tokenizer.vocab.get_id('In'),
@@ -96,7 +96,7 @@ class TestSimpleTokenizer(unittest.TestCase):
         """
 
         text = 'The quick brown fox jumps over the lazy dog.'
-        self.simple_tokenizer.train(text)
+        self.simple_tokenizer.learn(text)
         token_ids = [
             self.simple_tokenizer.vocab.get_id('The'),
             self.simple_tokenizer.vocab.get_id('quick'),

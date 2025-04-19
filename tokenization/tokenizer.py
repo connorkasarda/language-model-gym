@@ -30,7 +30,7 @@ class Tokenizer:
         
         self.vocab = Vocabulary()
 
-    def train(self, text: str) -> None:
+    def learn(self, text: str) -> None:
         """
         Trains the tokenizer on the provided text. Builds a vocabulary from the text.
 
@@ -38,10 +38,10 @@ class Tokenizer:
             text (str): The input text to train on.
         """
 
-        tokens = self.tokenize(text)
+        tokens = self.segment(text)
         self.vocab.build(tokens)
 
-    def tokenize(self, text: str) -> list[str]:
+    def segment(self, text: str) -> list[str]:
         """
         Tokenizes the input text into a list of tokens.
 
@@ -65,7 +65,7 @@ class Tokenizer:
             list[int]: A list of token IDs corresponding to the input text.
         """
 
-        tokens = self.tokenize(text)
+        tokens = self.segment(text)
         return [self.vocab.get_id(token) for token in tokens]
     
     def decode(self, token_ids: list[int]) -> str:
