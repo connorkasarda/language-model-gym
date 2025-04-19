@@ -21,6 +21,7 @@ class SimpleTokenizer(Tokenizer):
         """
         Initializes the SimpleTokenizer instance.
         """
+        
         super().__init__()
 
     def tokenize(self, text: str) -> list[str]:

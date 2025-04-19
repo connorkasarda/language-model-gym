@@ -6,10 +6,11 @@ Serves as a factory and training center for Large Language Models (LLM).
 
 This section lays out the order of operations involved in generating LLMs. Each operation is represented by a module or folder found in the root level directory.
 
-1. Tokenization
-2. Alignment
-3. Embedding
-4. *more to come...*
+1. Parsing
+2. Tokenization
+3. Alignment
+4. Embedding
+5. *more to come...*
 
 ## License 📜
 
