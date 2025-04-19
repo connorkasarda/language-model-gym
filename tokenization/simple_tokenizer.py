@@ -11,6 +11,10 @@ from tokenization.tokenizer import Tokenizer
 class SimpleTokenizer(Tokenizer):
     """
     A simple tokenizer that splits text into words and punctuation.
+
+    Methods:
+        __init__(): Initializes the SimpleTokenizer instance.
+        tokenize(text: str) -> list[str]: Tokenizes the input text into a list of tokens.
     """
 
     def __init__(self) -> None:

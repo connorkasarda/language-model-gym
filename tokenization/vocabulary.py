@@ -8,6 +8,13 @@ Date: 2025-04-13
 class Vocabulary:
     """
     A class to manage a vocabulary for tokenization.
+
+    Methods:
+        __init__: Initializes an empty Vocabulary.
+        build: Builds the vocabulary from a given text.
+        get_id: Returns the ID of a token.
+        get_token: Returns the token corresponding to an ID.
+        __len__: Returns the size of the vocabulary.
     """
 
     def __init__(
