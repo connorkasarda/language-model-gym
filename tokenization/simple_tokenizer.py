@@ -35,5 +35,5 @@ class SimpleTokenizer(Tokenizer):
             list[str]: A list of tokens extracted from the input text.
         """
         
-        tokens = re.findall(r'[a-zA-Z]+|[,.;:\'"!?()]|--', text)
+        tokens = re.findall(r'[a-zA-Z]+|[,.;:\'"!?()]|--|\s', text)
         return tokens
