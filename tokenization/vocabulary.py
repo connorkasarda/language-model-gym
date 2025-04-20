@@ -3,6 +3,9 @@ Name: vocabulary.py
 Description: Vocabulary class for tokenization
 Author: Connor Kasarda
 Date: 2025-04-13
+
+Warning:
+    Use at your own risk. The author is not responsible for any damages or losses incurred from using this code.
 """
 
 class Vocabulary:

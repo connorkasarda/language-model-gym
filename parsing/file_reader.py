@@ -3,6 +3,9 @@ Name: file_reader.py
 Description: This module contains the FileReader class for reading files and returning their contents.
 Author: Connor Kasarda
 Date: 2025-04-16
+
+Warning:
+    Use at your own risk. The author is not responsible for any damages or losses incurred from using this code.
 """
 
 from typing import Iterator

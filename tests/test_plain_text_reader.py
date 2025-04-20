@@ -3,6 +3,9 @@ name: test_plain_text_reader.py
 Description: Unit tests for the PlainTextReader class.
 Author: Connor Kasarda
 Date: 2025-04-18
+
+Warning:
+    Use at your own risk. The author is not responsible for any damages or losses incurred from using this code.
 """
 
 import unittest

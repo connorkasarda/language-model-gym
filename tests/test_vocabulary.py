@@ -3,6 +3,9 @@ name: test_vocabulary.py
 Description: Unit tests for the Vocabulary class.
 Author: Connor Kasarda
 Date: 2025-04-13
+
+Warning:
+    Use at your own risk. The author is not responsible for any damages or losses incurred from using this code.
 """
 
 import unittest

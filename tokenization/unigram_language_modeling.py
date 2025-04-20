@@ -3,6 +3,9 @@ Name: unigram_language_modeling.py
 Description: Unigram language modeling for tokenization.
 Author: Connor Kasarda
 Date: 2025-04-18
+
+Warning:
+    Use at your own risk. The author is not responsible for any damages or losses incurred from using this code.
 """
 
 from tokenization.tokenizer import Tokenizer

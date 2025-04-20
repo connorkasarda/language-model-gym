@@ -3,6 +3,14 @@ Name: byte_pair_encoding.py
 Description: Bottom-up tokenization using byte pair encoding (BPE) algorithm.
 Author: Connor Kasarda
 Date: 2025-04-18
+
+Notes:
+    BPE is a bottom-up, greedy subword tokenizatin algorithm used during development of the GPT-2 model.
+    One down side of BPE is that morphological information is potentially lost during the tokenization process.
+    E.g. "unhappiness" should be tokenized into "un", "happi", and "ness", but BPE might tokenize it into "unhap", "piness".
+    
+Warning:
+    Use at your own risk. The author is not responsible for any damages or losses incurred from using this code.
 """
 
 from tokenization.tokenizer import Tokenizer
@@ -17,6 +25,8 @@ class BytePairEncoding(Tokenizer):
     Methods:
         __init__(): Initializes the BytePairEncoding instance.
         segment(text: str) -> list[str]: Tokenizes the input text into a list of tokens using byte pair encoding.
+        find_most_frequent_token_pair(tokenized_text: list[str]) -> tuple[str, str]: Finds the most frequent pair of adjacent symbols in the tokenized text.
+        add_new_token_pair(token_pair: tuple[str, str], tokenized_text: list[str]) -> list[str]: Adds a new token pair to the tokenized text by merging the most frequent token pair.
     """
 
     def __init__(self, max_num_merges: int = 10000) -> None:

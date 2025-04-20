@@ -3,6 +3,9 @@ Name: simple_tokenizer.py
 Description: A simple tokenizer that splits text into words and punctuation.
 Author: Connor Kasarda
 Date: 2025-04-12
+
+Warning:
+    Use at your own risk. The author is not responsible for any damages or losses incurred from using this code.
 """
 
 import re
