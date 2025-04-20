@@ -46,7 +46,7 @@ class BytePairEncoding(Tokenizer):
         tokenized_text = list(text)
         if max_num_merges is None:
             max_num_merges = self.max_num_merges
-        for _ in max_num_merges:
+        for _ in range(max_num_merges):
             most_frequent_token_pair = self.find_most_frequent_token_pair(tokenized_text)
             if most_frequent_token_pair is None:
                 break

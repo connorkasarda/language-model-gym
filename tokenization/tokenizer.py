@@ -56,7 +56,7 @@ class Tokenizer:
     
     def encode(self, text: str) -> list[int]:
         """
-        Encodes the input text into a list of token IDs.
+        Encodes the input text into a list of token IDs using the vocabulary.
 
         Args:
             text (str): The input text to encode.
@@ -65,12 +65,26 @@ class Tokenizer:
             list[int]: A list of token IDs corresponding to the input text.
         """
 
-        tokenized_text = self.segment(text)
-        return [self.vocab.get_id(token) for token in tokenized_text]
+        token_ids = []
+        left_text_pointer = 0
+        while left_text_pointer < len(text):
+            token_found = False
+            for right_text_pointer in range(len(text), left_text_pointer, -1):
+                token = text[left_text_pointer:right_text_pointer]
+                token_id = self.vocab.get_id(token)
+                if token_id != self.vocab.UNKNOWN_ID:
+                    token_ids.append(token_id)
+                    left_text_pointer = right_text_pointer
+                    token_found = True
+                    break
+            if not token_found:
+                token_ids.append(self.vocab.UNKNOWN_ID)
+                left_text_pointer += 1
+        return token_ids
     
     def decode(self, token_ids: list[int]) -> str:
         """
-        Decodes a list of token IDs back into the original text.
+        Decodes a list of token IDs back into the original text using the vocabulary.
 
         Args:
             token_ids (list[int]): A list of token IDs to decode.
@@ -82,8 +96,6 @@ class Tokenizer:
         tokenzied_text = []
         for iter, token_id in enumerate(token_ids):
             token = self.vocab.get_token(token_id)
-            if iter != 0 and token not in string.punctuation:
-                tokenzied_text.append(' ')
             tokenzied_text.append(token)
         return ''.join(tokenzied_text)
     
