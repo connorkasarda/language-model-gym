@@ -3,6 +3,9 @@ Name: txt_file_reader.py
 Description: This module contains the TxtFileReader class for reading in plain text files and returning their contents.
 Author: Connor Kasarda
 Date: 2025-04-17
+
+Warning:
+    Use at your own risk. The author is not responsible for any damages or losses incurred from using this code.
 """
 
 from typing import Iterator
