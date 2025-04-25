@@ -1,6 +1,6 @@
 """
 Name: simple_tokenizer.py
-Description: A simple tokenizer that splits text into words and punctuation.
+Description: A simple tokenizer that splits text into words and punctuation including spaces in the tokens.
 Author: Connor Kasarda
 Date: 2025-04-12
 
@@ -29,7 +29,7 @@ class SimpleTokenizer(Tokenizer):
 
     def segment(self, text: str) -> list[str]:
         """
-        Tokenizes the input text into a list of tokens.
+        Tokenizes the input text into a list of tokens with whitespace included.
 
         Args:
             text (str): The input text to tokenize.
@@ -38,5 +38,5 @@ class SimpleTokenizer(Tokenizer):
             list[str]: A list of tokens extracted from the input text.
         """
         
-        tokens = re.findall(r'[a-zA-Z]+|[,.;:\'"!?()]|--|\s', text)
+        tokens = re.findall(r' ?[\w]+|[^\w\s]', text)
         return tokens
