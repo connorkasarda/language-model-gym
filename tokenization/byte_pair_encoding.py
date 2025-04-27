@@ -21,6 +21,7 @@ class BytePairEncoding(Tokenizer):
 
     Attributes:
         vocab (Vocabulary): An instance of the Vocabulary class used for encoding and decoding tokens.
+        max_num_merges (int): The maximum number of token-pair merges to perform.
 
     Methods:
         __init__(): Initializes the BytePairEncoding instance.
