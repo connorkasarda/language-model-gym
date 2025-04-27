@@ -27,9 +27,9 @@ class TestWordPiece(unittest.TestCase):
         Test the learning process of the WordPiece tokenizer.
         """
         
-        text = "low lower lowest"
+        text = "low lower lowest!"
         self.tokenizer.learn(text)
-        expected_vocab = ['<UNK>', '<PAD>', '<BOS>', '<EOS>', '##er', '##est', 'low']
+        expected_vocab = ['<UNK>', '<PAD>', '<BOS>', '<EOS>', '!', '##er', '##est', 'low']
         actual_vocab = [token for token, _ in self.tokenizer.vocab.token_2_id_map.items()]
         self.assertEqual(actual_vocab, expected_vocab)
 
@@ -38,7 +38,11 @@ class TestWordPiece(unittest.TestCase):
         Test the tokenization of a simple sentence.
         """
         
-        text = "low lower lowest"
-        expected_segments = ["low", "low", "##er", "low", "##est"]
+        text = "low lower lowest!"
+        expected_segments = ["low", "low", "##er", "low", "##est", '!']
         actual_segments = self.tokenizer.segment(text)
         self.assertEqual(actual_segments, expected_segments)
+
+    # encode
+
+    # decode

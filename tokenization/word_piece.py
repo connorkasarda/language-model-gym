@@ -14,9 +14,11 @@ from tokenization.tokenizer import Tokenizer
 class WordPiece(Tokenizer):
     """
     WordPiece tokenizer implementation.
+    Punctuation is treated as a special token that cannot be merged with other tokens!
 
     Attributes:
         vocab (Vocabulary): An instance of the Vocabulary class used for encoding and decoding tokens.
+        max_num_merges (int): The maximum number of token-pair merges to perform.
 
     Methods:
         __init__(): Initializes the WordPiece instance.
@@ -55,7 +57,7 @@ class WordPiece(Tokenizer):
             max_num_merges = self.max_num_merges
 
         # Initialize with pre-tokenized text and frequency map, removing whitespaces
-        words_puncs_spaces = re.findall(r'[\w]+|[^\w\s]+', text)
+        words_puncs = re.findall(r'[\w]+|[^\w\s]', text)
         tokenized_text = [char for char in text if not char.isspace()]
         token_2_freq_map = {}
 
@@ -74,7 +76,7 @@ class WordPiece(Tokenizer):
             tokenized_text = self.add_new_token_pair(token_pair, token_2_freq_map, tokenized_text)
         
         # Produce word pieces that would build up to the tokenized text
-        return self.split_into_word_pieces(words_puncs_spaces, token_2_freq_map)
+        return self.split_into_word_pieces(words_puncs, token_2_freq_map)
 
     def encode(self, text: str) -> list[int]:
         """
@@ -87,7 +89,19 @@ class WordPiece(Tokenizer):
             list[int]: A list of token IDs corresponding to the input text.
         """
 
-        pass
+        # Tokenize the text using the WordPiece algorithm
+        tokenized_text = self.segment(text)
+
+        # Encode the tokenized text into token IDs
+        token_ids = []
+        for token in tokenized_text:
+            token_id = self.vocab.get_id(token)
+            if token_id != self.vocab.UNKNOWN_ID:
+                token_ids.append(token_id)
+            else:
+                token_ids.append(self.vocab.UNKNOWN_ID)
+
+        return token_ids
 
     def decode(self, token_ids: list[int]) -> str:
         """
@@ -100,8 +114,22 @@ class WordPiece(Tokenizer):
             str: The decoded text.
         """
 
-        pass
-        
+        # Decode the token IDs into tokens
+        tokens = [self.vocab.get_token(token_id) for token_id in token_ids]
+
+        # Reconstruct the original text from the tokens but remember to add whitespaces between words and punctuation correctly
+        decoded_text = []
+        for token in tokens:
+            if re.fullmatch(r'[^\w\s]', token):
+                decoded_text.append(token)
+            elif token.startswith('##'):
+                decoded_text[-1] += token[2:]
+            else:
+                decoded_text.append(' ' + token)
+
+        # Combine into a single string
+        return ''.join(decoded_text)
+
     def find_highest_scoring_token_pair(
             self,
             tokenized_text: list[str],
@@ -123,7 +151,15 @@ class WordPiece(Tokenizer):
 
         # Collect the frequency of all occuring token pairs in the tokenized text
         for token_idx in range(len(tokenized_text) - 1):
+
+            # Construct potential token pair
             token_pair = (tokenized_text[token_idx], tokenized_text[token_idx + 1])
+
+            # Skip token pair analysis if either token is punctuation
+            if re.fullmatch(r'[^\w\s]', token_pair[0]) or re.fullmatch(r'[^\w\s]', token_pair[1]):
+                continue
+
+            # Check if valid token pair is present in the tokenized text
             if token_pair not in token_pair_2_freq_map:
                 token_pair_2_freq_map[token_pair] = 1
             else:
@@ -158,6 +194,10 @@ class WordPiece(Tokenizer):
         Returns:
             list[str]: The updated tokenized text with the new token pair added.
         """
+
+        # Skip merging if either token in the pair is punctuation
+        if re.fullmatch(r'[^\w\s]', token_pair[0]) or re.fullmatch(r'[^\w\s]', token_pair[1]):
+            return tokenized_text
 
         # Create a new merged token from the token pair and initialize the updated tokenized text and skip token flag
         new_token = ''.join(token_pair)
@@ -206,13 +246,13 @@ class WordPiece(Tokenizer):
 
     def split_into_word_pieces(
             self,
-            words_puncs_spaces: list[str],
+            words_puncs: list[str],
             token_2_freq_map: dict[str, int]) -> list[str]:
         """
         Adds the WordPiece prefix notation (i.e., ##) to the tokenized text.
 
         Args:
-            words_puncs_spaces (list[str]): The tokenized text to update.
+            words_puncs (list[str]): The tokenized text to update.
             token_2_freq_map (dict[str, int]): A dictionary mapping tokens to their frequencies.
 
         Returns:
@@ -223,9 +263,14 @@ class WordPiece(Tokenizer):
         word_pieces = []
 
         # Add list of subwords w/ or w/o prefixes (i.e. "##") to build the words from the original text
-        for token in words_puncs_spaces:
+        for token in words_puncs:
         
-            # If the token is already a known token, just add it as is
+            # If the token is punctuation, add it as is
+            if re.fullmatch(r'[^\w\s]', token):
+                word_pieces.append(token)
+                continue
+
+            # If the full word is already a known token, just add it as is
             if token in token_2_freq_map:
                 word_pieces.append(token)
                 continue
