@@ -23,6 +23,9 @@ class WordPiece(Tokenizer):
         segment(text: str, max_num_merges: int = None) -> list[str]: Tokenizes the input text into a list of tokens using WordPiece.
         encode(text: str) -> list[int]: Encodes the input text into a list of token IDs.
         decode(token_ids: list[int]) -> str: Decodes a list of token IDs back into the original text.
+        find_highest_scoring_token_pair(tokenized_text: list[str], token_2_freq_map: dict[str, int]) -> tuple[str, str]: Finds the highest scoring token pair in the tokenized text.
+        add_new_token_pair(token_pair: tuple[str, str], token_2_freq_map: dict[str, int], tokenized_text: list[str]) -> list[str]: Adds a new token pair to the tokenized text by merging the highest scoring token pair.
+        split_into_word_pieces(words_puncs_spaces: list[str], token_2_freq_map: dict[str, int]) -> list[str]: Adds the WordPiece prefix notation (i.e., ##) to the tokenized text.
     """
 
     def __init__(self, max_num_merges: int = 10000) -> None:
@@ -219,7 +222,7 @@ class WordPiece(Tokenizer):
         # Create a new list to store the updated tokenized text with prefixes
         word_pieces = []
 
-        # Add list of subwords w/o prefixes (i.e. "##") to build the words from the original text
+        # Add list of subwords w/ or w/o prefixes (i.e. "##") to build the words from the original text
         for token in words_puncs_spaces:
         
             # If the token is already a known token, just add it as is
