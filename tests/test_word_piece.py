@@ -22,6 +22,17 @@ class TestWordPiece(unittest.TestCase):
         """
         self.tokenizer = WordPiece(max_num_merges=5)
 
+    def test_learn(self):
+        """
+        Test the learning process of the WordPiece tokenizer.
+        """
+        
+        text = "low lower lowest"
+        self.tokenizer.learn(text)
+        expected_vocab = ['<UNK>', '<PAD>', '<BOS>', '<EOS>', '##er', '##est', 'low']
+        actual_vocab = [token for token, _ in self.tokenizer.vocab.token_2_id_map.items()]
+        self.assertEqual(actual_vocab, expected_vocab)
+
     def test_segment(self):
         """
         Test the tokenization of a simple sentence.

@@ -96,7 +96,7 @@ class Tokenizer:
         """
 
         tokenzied_text = []
-        for iter, token_id in enumerate(token_ids):
+        for token_id in token_ids:
             token = self.vocab.get_token(token_id)
             tokenzied_text.append(token)
         return ''.join(tokenzied_text)
