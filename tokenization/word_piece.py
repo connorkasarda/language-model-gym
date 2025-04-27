@@ -54,9 +54,9 @@ class WordPiece(Tokenizer):
         if max_num_merges is None:
             max_num_merges = self.max_num_merges
 
-        # Initialize with pre-tokenized text and frequency map
-        words_puncs_spaces = re.findall(r'[\w]+|[^\w\s]+|\s', text)
-        tokenized_text = list(text)
+        # Initialize with pre-tokenized text and frequency map, removing whitespaces
+        words_puncs_spaces = re.findall(r'[\w]+|[^\w\s]+', text)
+        tokenized_text = [char for char in text if not char.isspace()]
         token_2_freq_map = {}
 
         # Collect the frequencies of all tokens in the pre-tokenized text
