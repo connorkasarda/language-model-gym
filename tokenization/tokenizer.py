@@ -8,7 +8,6 @@ Warning:
     Use at your own risk. The author is not responsible for any damages or losses incurred from using this code.
 """
 
-import string
 from tokenization.vocabulary import Vocabulary
 
 class Tokenizer:
