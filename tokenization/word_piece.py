@@ -14,7 +14,7 @@ from tokenization.tokenizer import Tokenizer
 class WordPiece(Tokenizer):
     """
     WordPiece tokenizer implementation.
-    Punctuation is treated as a special token that cannot be merged with other tokens!
+    Punctuation and whitespace is treated as a special token that cannot be merged with other tokens!
 
     Attributes:
         vocab (Vocabulary): An instance of the Vocabulary class used for encoding and decoding tokens.
@@ -57,8 +57,7 @@ class WordPiece(Tokenizer):
             max_num_merges = self.max_num_merges
 
         # Initialize with pre-tokenized text and frequency map, removing whitespaces
-        words_puncs = re.findall(r'[\w]+|[^\w\s]', text)
-        tokenized_text = [char for char in text if not char.isspace()]
+        tokenized_text = [char for char in text]
         token_2_freq_map = {}
 
         # Collect the frequencies of all tokens in the pre-tokenized text
@@ -75,8 +74,8 @@ class WordPiece(Tokenizer):
                 break
             tokenized_text = self.add_new_token_pair(token_pair, token_2_freq_map, tokenized_text)
         
-        # Produce word pieces that would build up to the tokenized text
-        return self.split_into_word_pieces(words_puncs, token_2_freq_map)
+        # Add prefixes to subwords where necessary
+        return self.add_prefixes(tokenized_text)
 
     def encode(self, text: str) -> list[int]:
         """
@@ -120,12 +119,10 @@ class WordPiece(Tokenizer):
         # Reconstruct the original text from the tokens but remember to add whitespaces between words and punctuation correctly
         decoded_text = []
         for token in tokens:
-            if re.fullmatch(r'[^\w\s]', token):
-                decoded_text.append(token)
-            elif token.startswith('##'):
+            if token.startswith('##'):
                 decoded_text[-1] += token[2:]
             else:
-                decoded_text.append(' ' + token)
+                decoded_text.append(token)
 
         # Combine into a single string
         return ''.join(decoded_text)
@@ -156,7 +153,7 @@ class WordPiece(Tokenizer):
             token_pair = (tokenized_text[token_idx], tokenized_text[token_idx + 1])
 
             # Skip token pair analysis if either token is punctuation
-            if re.fullmatch(r'[^\w\s]', token_pair[0]) or re.fullmatch(r'[^\w\s]', token_pair[1]):
+            if re.fullmatch(r'[^\w\s]|\s', token_pair[0]) or re.fullmatch(r'[^\w\s]|\s', token_pair[1]):
                 continue
 
             # Check if valid token pair is present in the tokenized text
@@ -195,8 +192,8 @@ class WordPiece(Tokenizer):
             list[str]: The updated tokenized text with the new token pair added.
         """
 
-        # Skip merging if either token in the pair is punctuation
-        if re.fullmatch(r'[^\w\s]', token_pair[0]) or re.fullmatch(r'[^\w\s]', token_pair[1]):
+        # Skip merging if either token in the pair is punctuation or a whitespace
+        if re.fullmatch(r'[^\w\s]|\s', token_pair[0]) or re.fullmatch(r'[^\w\s]|\s', token_pair[1]):
             return tokenized_text
 
         # Create a new merged token from the token pair and initialize the updated tokenized text and skip token flag
@@ -244,56 +241,44 @@ class WordPiece(Tokenizer):
         # Return the updated tokenized text
         return updated_tokenized_text
 
-    def split_into_word_pieces(
+    def add_prefixes(
             self,
-            words_puncs: list[str],
-            token_2_freq_map: dict[str, int]) -> list[str]:
+            tokenized_text: list[str]) -> list[str]:
         """
         Adds the WordPiece prefix notation (i.e., ##) to the tokenized text.
 
         Args:
-            words_puncs (list[str]): The tokenized text to update.
-            token_2_freq_map (dict[str, int]): A dictionary mapping tokens to their frequencies.
+            tokenized_text (list[str]): The segmented text without prefixes
 
         Returns:
             list[str]: The updated tokenized text with the WordPiece prefix notation added.
         """
 
-        # Create a new list to store the updated tokenized text with prefixes
-        word_pieces = []
+        # Create a list to store the updated tokenized text with prefixes
+        prefixed_text = []
 
-        # Add list of subwords w/ or w/o prefixes (i.e. "##") to build the words from the original text
-        for token in words_puncs:
-        
-            # If the token is punctuation, add it as is
-            if re.fullmatch(r'[^\w\s]', token):
-                word_pieces.append(token)
-                continue
+        # Variable to track whether the last token was a punctuation or whitespace
+        last_was_punctuation_or_whitespace = True
 
-            # If the full word is already a known token, just add it as is
-            if token in token_2_freq_map:
-                word_pieces.append(token)
-                continue
+        # Iterate through each token in the tokenized text
+        for token in tokenized_text:
 
-            # Find word pieces that build up our token
-            token_word_pieces = []
-            while len(token) > 0:
-                for pointer in range(len(token), 0, -1):
-                    left_side = token[:pointer]
-                    if left_side in token_2_freq_map:
-                        token_word_pieces.append(left_side)
-                        token = token[pointer:]
-                        break
+            # If the token is punctuation or whitespace, add it as is
+            if re.fullmatch(r'[^\w\s]|\s', token):
+                prefixed_text.append(token)
+                last_was_punctuation_or_whitespace = True
+
+            # We have a subword    
+            else:
+
+                # If the last token was punctuation or whitespace, this is the first token of a word
+                if last_was_punctuation_or_whitespace:
+                    prefixed_text.append(token)
+                    last_was_punctuation_or_whitespace = False
+                
+                # This is a subword, so add the "##" prefix
                 else:
-                    token_word_pieces.append(self.vocab.UNKNOWN_TOKEN)
-                    break
-
-            # Add "##" prefixes to word pieces where needed
-            for piece_idx, piece in enumerate(token_word_pieces):
-                if piece_idx == 0:
-                    word_pieces.append(piece)
-                else:
-                    word_pieces.append('##' + piece)
+                    prefixed_text.append('##' + token)
 
         # Return the updated tokenized text with prefixes
-        return word_pieces
+        return prefixed_text
