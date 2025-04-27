@@ -9,6 +9,7 @@ Warning:
 """
 
 import unittest
+import textwrap
 from tokenization.word_piece import WordPiece
 
 class TestWordPiece(unittest.TestCase):
@@ -29,7 +30,7 @@ class TestWordPiece(unittest.TestCase):
         
         text = "low lower lowest!"
         self.tokenizer.learn(text)
-        expected_vocab = ['<UNK>', '<PAD>', '<BOS>', '<EOS>', '!', '##er', '##est', 'low']
+        expected_vocab = ['<UNK>', '<PAD>', '<BOS>', '<EOS>', ' ', '!', '##er', '##est', 'low']
         actual_vocab = [token for token, _ in self.tokenizer.vocab.token_2_id_map.items()]
         self.assertEqual(actual_vocab, expected_vocab)
 
@@ -39,10 +40,25 @@ class TestWordPiece(unittest.TestCase):
         """
         
         text = "low lower lowest!"
-        expected_segments = ["low", "low", "##er", "low", "##est", '!']
+        expected_segments = ["low", " ", "low", "##er", " ", "low", "##est", '!']
         actual_segments = self.tokenizer.segment(text)
         self.assertEqual(actual_segments, expected_segments)
 
-    # encode
+    def test_encode_decode(self):
+        """
+        Test encoding a string to a list of token IDs
+        """
 
-    # decode
+        expected_text = textwrap.dedent("""\
+                               Hello, and welcome to the Aperture Science Computer-Aided Enrichment Center.
+                               We hope your brief detention in the relaxation vault has been a pleasant one.
+                               Your specimen has been processed, and we are now ready to begin the test proper.
+                               Before we start, however, keep in mind that although fun and learning are the
+                               primary goals of all enrichment center activities, serious injuries may occur.
+                               For your safety, and the safety of others, please refrain from touching the glass.
+                               """)
+        self.tokenizer.max_num_merges = 100
+        self.tokenizer.learn(expected_text)
+        tokenized = self.tokenizer.encode(expected_text)
+        actual_text = self.tokenizer.decode(tokenized)
+        self.assertEqual(actual_text, expected_text)
